@@ -3,20 +3,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <algorithm> // For std::find_if
-
+#include <algorithm>
 using namespace std;
 
-// This function handles the unpacking process.
-// => Opens the packed file for reading in binary mode. If it fails, an error message is printed, and the function exits.
-// => Initializes a buffer (header) to hold the header data for each file.
-// => Uses a loop to read the packed file in chunks corresponding to the size of the header (100 bytes).
-// => Constructs a string from the header data and removes any trailing whitespace.
-// => Parses the header to extract the file name and size using a stringstream. If parsing fails, an error message is printed, and it continues to the next iteration.
-// => Opens a new file with the extracted name for writing. If this fails, it prints an error and skips to the next header.
-// => Reads the actual file data into a buffer of the size specified in the header and writes this buffer to the newly created file.
-// => Increments the count of successfully extracted files and prints a success message.
-// => After finishing, it prints a summary of the unpacking activity, including the total number of files extracted.
 void unpackFiles(const string &packFileName)
 {
     ifstream packFile(packFileName, ios::binary);
@@ -35,7 +24,6 @@ void unpackFiles(const string &packFileName)
     {
         string headerStr(reinterpret_cast<char *>(header), sizeof(header));
 
-        // Remove trailing spaces
         headerStr.erase(find_if(headerStr.rbegin(), headerStr.rend(), [](unsigned char ch)
                                 { return !isspace(ch); })
                             .base(),
@@ -43,12 +31,11 @@ void unpackFiles(const string &packFileName)
 
         cout << headerStr << endl;
 
-        // Split the header to extract file name and size
         stringstream ss(headerStr);
         string fileName;
         size_t fileSize;
 
-        ss >> fileName >> fileSize; // Use stringstream to parse file name and size
+        ss >> fileName >> fileSize; 
 
         if (ss.fail())
         {
@@ -71,7 +58,7 @@ void unpackFiles(const string &packFileName)
         iCount++;
     }
 
-    cout << "---------------------- Unpacking Summary ----------------------" << endl;
+    cout << "--------------- Unpacking Summary --------------" << endl;
     cout << "Total number of files extracted: " << iCount << endl;
     cout << "Thank you for using Packer-Unpacker..." << endl;
 }
